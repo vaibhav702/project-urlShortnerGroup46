@@ -1,8 +1,21 @@
-function validateUrl(value) {
-    return "^(?:(?:http(?:s)?|ftp)://)(?:\\S+(?::(?:\\S)*)?@)?(?:(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)(?:\\.(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)*(?:\\.(?:[a-z0-9\u00a1-\uffff]){2,})(?::(?:\\d){2,5})?(?:/(?:\\S)*)?$".test(
-      value
-    );
-  }
+// function validateUrl(value) {
+//     return "^(?:(?:http(?:s)?|ftp)://)(?:\\S+(?::(?:\\S)*)?@)?(?:(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)(?:\\.(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)*(?:\\.(?:[a-z0-9\u00a1-\uffff]){2,})(?::(?:\\d){2,5})?(?:/(?:\\S)*)?$".test(
+//       value
+//     );
+//   }
+
+//    module.exports.validateUrl = function (value){
+//    return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:\[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-]*)?\??(?:[-\+=&;%@.\w]*)#?(?:[\w]*))?)/.test( value);
+// }
+
+   module.exports.isValid = function (value) {
+    if (typeof value === "undefined" || value === null) return false;
+    if (typeof value === "string" && value.trim().length === 0) return false;
+    return true;
+   }
+
+
+
 //   # protocol identifier (optional) + //
 //   group(list("http", maybe("s")) %or% "ftp", "://"),
 
@@ -29,5 +42,5 @@ function validateUrl(value) {
 //   end
 // )
   
-  module.exports.validateUrl=validateUrl
+ // module.exports.validateUrl=validateUrl
 
