@@ -103,7 +103,7 @@ const createUrl = async (req, res) =>{
           };
       //if url short is created already so we are going to find it and give that url to user
          const dbUrl = await urlModel.create(newUrl);
-          return res.status(200).send({status:true, data:dbUrl});
+          return res.status(201).send({status:true, data:dbUrl});
   
         }
     
