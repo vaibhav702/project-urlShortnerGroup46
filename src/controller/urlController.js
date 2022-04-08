@@ -9,7 +9,10 @@ const { promisify } = require("util");
 const redisClient = redis.createClient(
   11588, // port number
   "redis-11588.c212.ap-south-1-1.ec2.cloud.redislabs.com", // link sring( Link)
-  { no_ready_check: true } //
+  { no_ready_check: true }
+  //"ready check" which sends the INFO command to the server. The response from the INFO command indicates
+  // whether the server is ready for more commands. When ready, node_redis emits a ready event.
+  // Setting no_ready_check to true will inhibit this check
 );
 redisClient.auth("6W26UpQbpdlmIq12YAQU8vSxeWVkc6cS", function (err) {
   if (err) throw err;
@@ -76,32 +79,44 @@ const createUrl = async (req, res) => {
 
     console.log(urlCode);
 
-    let url = await urlModel.findOne({ longUrl }).select({ id: 0, _v: 0 });
+    let url = await urlModel.findOne({ longUrl }).select({ _id: 0, __v: 0 });
     //It describes the internal revision of a document. This __v field is used to track the revisions of a document. By default, its value is zero.
     if (url) {
       return res.status(200).send({ status: true, data: url });
     } else {
       let shortUrl = `${base}/${urlCode}`;
-      // const shortUrl = "http://localhost:3000/nhnmecrau";;
-      const generateUrl = () => {
+      //let shortUrl = `http://localhost:3000/nhnmecrau`;
+      // console.log(typeof shortUrl)
+
+      const generateUrl = async () => {
         urlCode = shortId.generate().toLowerCase();
+        shortUrl = `${base}/${urlCode}`;
+        console.log("dup second");
+
+        let againDuplicate = await urlModel.findOne({ shortUrl });
+
+        if (againDuplicate) {
+          return generateUrl();
+          // return res.send({status: 409, message:"please again hit this API to generate shortUrl"})
+        }
         return `${base}/${urlCode}`;
       };
 
       const duplicateUrl = await urlModel.findOne({ shortUrl });
 
       if (duplicateUrl) {
-        shortUrl = generateUrl();
+        generateUrl();
+        console.log("dup if");
         // return res.send({status: 409, message:"please again hit this API to generate shortUrl"})
       }
 
-      newUrl = {
+      const newUrl = {
         longUrl,
         shortUrl,
         urlCode,
       };
       //if url short is created already so we are going to find it and give that url to user
-      const dbUrl = await urlModel.create(newUrl).select({ _id: 0 });
+      const dbUrl = await urlModel.create(newUrl);
       return res.status(201).send({ status: true, data: dbUrl });
     }
   } catch (error) {
@@ -125,6 +140,7 @@ const getUrl = async (req, res) => {
     const redis_string_UrlDoc = await GET_ASYNC(`${req.params.urlCode}`);
     console.log(redis_string_UrlDoc);
     const redis_UrlDoc = JSON.parse(redis_string_UrlDoc);
+
     if (redis_UrlDoc) {
       console.log("responce from redis");
       return res.status(303).redirect(redis_UrlDoc.longUrl);
@@ -139,7 +155,7 @@ const getUrl = async (req, res) => {
         .send({ status: false, msg: "url Document not Found" });
     }
     await SET_ASYNC(`${urlCode}`, JSON.stringify(urlDocument));
-    await SET_EXP(`${urlCode}`, 60);
+    await SET_EXP(`${urlCode}`, 60); // 60 second is expiry time of url from redis
     const longUrl = urlDocument.longUrl;
     return res.status(302).redirect(longUrl);
   } catch (error) {
