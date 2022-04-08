@@ -91,3 +91,63 @@ If you haven’t used tinyurl.com before, please try creating a new shortened UR
 }
 
 ```
+
+
+
+
+
+
+
+
+// caches are used to store temporary fiels , and that fiels are stored into cpu cache, 
+// basically it's an small part of RAM but more close to Operating SYstem
+// this is small chunk (part) of memory on computer where some data is stored that is frequentlu used 
+// or recently used  
+// By using cashing browser save some part of website to load it faster when we visit the same website
+// next time 
+
+//so basically how it will perform faster execution it stores the accurate address of that website
+//so next time when the request get send to server at that time it will also send accurate address 
+//of that site so when serever get this request at this time i will not check whre the data is stored 
+// at that time server will also have accurate address so server will immidiatly send responce 
+//we can store short url in our cache and increase user experiance
+
+//Redis, which stands for Remote Dictionary Server, is a fast, open source, in-memory, key-value data store.
+
+// uses =>
+
+// 1=> we avoid DB calls so we can save time
+// 2=> reduce loading time
+// 3=> better user experience
+
+//4=> decrease data access latency, increase throughput, and ease the load off your relational or NoSQL database and application
+
+//5=> it will expire data by default
+
+//Drawback ===> 
+1==> it have only 2 methods get and set so we can not perform different operation
+2==> redis accept data only in key value pairs and value is accepted and stored in string formate
+ 3==> it is costly (expensive than db)
+ 4==> There is no query language (only commands) and no support for a relational algebra. You cannot submit ad-hoc queries (like you can using SQL on a RDBMS)
+
+ 5==>
+Redis is (for practical purposes) single threaded 
+Redis can hold 232 keys
+A key (not values) can be up to 512MB 
+KEYS is an O(n) operation.
+ <===uses===>
+
+
+Data Persistence.High availability and scalability.
+Rich Data Structures.
+Simplicity.
+Chat and Messaging Applications.
+Chating application's use cases and respective data structures usage.
+Gaming leaderboard applications.
+Session store.
+
+
+
+
+
+
